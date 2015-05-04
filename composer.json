@@ -1,5 +1,20 @@
 {
+    "name": "gsouf/thumbz",
+    "type": "library",
+    "version": "0.1.0",
+    "description": "Imagine wrapper to create and cache thumbs from original images",
+    "keywords": ["image,thumb"],
+    "homepage": "https://github.com/gsouf/thumbz",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Soufiane Ghzal",
+            "email": "sghzal@gmail.com"
+        }
+    ],
+
     "require":{
+        "php": ">=5.4",
         "imagine/imagine": "~0.5.0"
     },
     "autoload":{
