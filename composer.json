@@ -3,7 +3,7 @@
     "type": "library",
     "version": "0.1.0",
     "description": "Imagine wrapper to create and cache thumbs from original images",
-    "keywords": ["image,thumb"],
+    "keywords": ["image","thumb"],
     "homepage": "https://github.com/gsouf/thumbz",
     "license": "MIT",
     "authors": [
