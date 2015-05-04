@@ -74,7 +74,7 @@ class FileCache {
     public function cache($path, ImageInterface $data){
         $path = $this->getFullPath($path);
         $this->_prepareDirectoryForFile($path);
-        $data->save($path, array('jpeg_quality' => 100, 'png_compression_level' => 5));
+        $data->save($path, array('quality' => 100));
     }
     
     private function _prepareDirectoryForFile($path){

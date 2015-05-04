@@ -9,6 +9,8 @@ use Imagine\Image\ImagineInterface;
 
 abstract class AbstractThumbCache {
 
+    protected $ouputFormat = "png";
+
     /**
      * @param $params
      * @return ImageInterface
@@ -22,9 +24,29 @@ abstract class AbstractThumbCache {
 
 
     public function getCacheName($name, $width, $height){
-        $path = $name . "_" . $width . "_" . $height . ".jpg";
+        $path = $name . "." . $width . "-" . $height . "." . $this->ouputFormat;
         return $path;
     }
+
+    /**
+     * default to png
+     * @return string
+     */
+    public function getOuputFormat()
+    {
+        return $this->ouputFormat;
+    }
+
+    /**
+     * default to png
+     * @param string $ouputFormat
+     */
+    public function setOuputFormat($ouputFormat)
+    {
+        $this->ouputFormat = $ouputFormat;
+    }
+
+
 
 
     protected $imagineAdapter;

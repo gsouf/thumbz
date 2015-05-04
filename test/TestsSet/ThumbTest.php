@@ -10,21 +10,19 @@ class ThumbTest extends PHPUnit_Framework_TestCase{
     public function testThumb(){
 
 
-        $pictureName = "homer.jpg";
-        $width = 80;
-        $height = 80;
+        $pictureName = "spongebob.png";
+        $width = 100;
+        $height = 100;
 
 
         $pictureFinder = new DirectoryPictureFinder(__DIR__ . "/../resources/img");
         $pictureCache  = new DirectoryThumbCache(__DIR__ . "/../resources/cache");
-        $thumbMaker    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true]);
+        $thumbMaker    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true, "pngquant" => true]);
 
 
 
         try{
             if( ! $pictureCache->cacheExists($pictureName, $width, $height)){
-
-                var_dump("cached");
 
                 $image = $pictureFinder->findImage($pictureName);
                 $thumb = $thumbMaker->generateThumb($image, $width, $height);

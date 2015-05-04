@@ -16,6 +16,7 @@ class DirectoryThumbCache extends AbstractThumbCache {
      */
     protected $fileCache;
 
+
     function __construct($baseDirectory, $time = null)
     {
         if(null === $time){
@@ -37,7 +38,8 @@ class DirectoryThumbCache extends AbstractThumbCache {
 
     public function setCache($name, $width, $height, ImageInterface $data)
     {
-        $this->fileCache->cache($this->getCacheName($name, $width, $height), $data);
+        $fileName = $this->getCacheName($name, $width, $height);
+        $this->fileCache->cache($fileName, $data);
     }
 
     public function getCache($name, $width, $height)

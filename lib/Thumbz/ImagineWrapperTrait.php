@@ -3,8 +3,9 @@
 namespace Thumbz;
 
 
-use Imagine\Image\ImagineInterface;
 use Imagine\Gd\Imagine;
+use Imagine\Image\ImagineInterface;
+
 trait ImagineWrapperTrait {
 
     /**
@@ -19,7 +20,7 @@ trait ImagineWrapperTrait {
     {
 
         if(null == $this->imagineAdapter){
-            $this->imagineAdapter = new Imagine();
+            $this->imagineAdapter = new \Imagine\Imagick\Imagine();
         }
 
         return $this->imagineAdapter;
