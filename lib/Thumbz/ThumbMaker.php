@@ -3,11 +3,9 @@
 namespace Thumbz;
 
 
-use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
-use Imagine\Image\Color;
 use Imagine\Image\ImageInterface;
-use Imagine\Image\ImagineInterface;
+use Imagine\Image\Palette\RGB;
 use Imagine\Image\Point;
 
 class ThumbMaker {
@@ -48,10 +46,12 @@ class ThumbMaker {
         // fill the area
         if($fitSize){
 
+            $palette = new RGB();
+
             if( !$background || $background == "transparent"){
-                $backgroundColor = new Color("fff",1);
+                $backgroundColor = $palette->color("fff",1);
             }else{
-                $backgroundColor = new Color($background);
+                $backgroundColor = $palette->color($background);
             }
 
             // source http://harikt.com/blog/2012/12/17/resize-image-keeping-aspect-ratio-in-imagine/
@@ -97,7 +97,7 @@ class ThumbMaker {
                 $minquality = $maxquality;
             }
 
-            $command = "pngquant --quality=$minquality-$maxquality - < ".escapeshellarg(    $tempFile);
+            $command = "$executable --quality=$minquality-$maxquality - < ".escapeshellarg(    $tempFile);
             $compressed = shell_exec($command);
 
             if (!$compressed) {
