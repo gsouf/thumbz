@@ -44,7 +44,8 @@ class DirectoryThumbCache extends AbstractThumbCache {
 
     public function getCache($name, $width, $height)
     {
-        return file_get_contents($this->getCacheName($name, $width, $height));
+        $path = $this->getCacheName($name, $width, $height);
+        return $this->fileCache->getCache($path);
     }
 
 

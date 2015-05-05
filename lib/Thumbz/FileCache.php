@@ -78,6 +78,10 @@ class FileCache {
         chmod($path, 0777);
     }
 
+    public function getCache($path){
+        return file_get_contents($this->pathProtectorProtect($path));
+    }
+
     private function _prepareDirectoryForFile($path){
         $dirs = substr($path, 0, strrpos( $path, '/') );
         if(!file_exists($dirs)){
@@ -86,4 +90,5 @@ class FileCache {
             umask($oldUM);
         }
     }
+
 }
