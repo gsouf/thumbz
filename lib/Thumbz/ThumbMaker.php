@@ -48,14 +48,14 @@ class ThumbMaker {
         // fill the area
         if($fitSize){
 
-            if($background || $background == "transparent"){
+            if( !$background || $background == "transparent"){
                 $backgroundColor = new Color("fff",1);
             }else{
                 $backgroundColor = new Color($background);
             }
 
             // source http://harikt.com/blog/2012/12/17/resize-image-keeping-aspect-ratio-in-imagine/
-            $realThumb  = $this->getImagineAdapter()->create($sizeBox);
+            $realThumb  = $this->getImagineAdapter()->create($sizeBox, $backgroundColor);
 
             $sizeR     = $thumb->getSize();
             $widthR    = $sizeR->getWidth();
