@@ -10,18 +10,31 @@ class ThumbTest extends PHPUnit_Framework_TestCase{
     public function testThumb(){
 
 
-        $pictureName = "spongebob.png";
+        $pictureName = "spongebob.jpg";
         $width = 100;
         $height = 100;
 
 
+
         $pictureFinder = new DirectoryPictureFinder(__DIR__ . "/../resources/img");
-        $pictureCache  = new DirectoryThumbCache(__DIR__ . "/../resources/cache");
-        $thumbMaker    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true, "pngquant" => true]);
 
+        // PNG MAKER
+        $pictureCachePng  = new DirectoryThumbCache(__DIR__ . "/../resources/cache");
+        $pictureCachePng->setOuputFormat("png");
+        $thumbMakerPng    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true]);
+        $thumbMakerPng->addFilter(new \Thumbz\Filter\PngQuant());
 
+        // JPG MAKER
+        $pictureCacheJpg  = new DirectoryThumbCache(__DIR__ . "/../resources/cache");
+        $pictureCacheJpg->setOuputFormat("jpg");
+        $thumbMakerJpg    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true]);
+        $thumbMakerJpg->addFilter(new \Thumbz\Filter\JpegOptim(80));
 
         try{
+
+            $pictureCache = $pictureCachePng;
+            $thumbMaker   = $thumbMakerPng;
+
             if( ! $pictureCache->cacheExists($pictureName, $width, $height)){
 
                 $image = $pictureFinder->findImage($pictureName);

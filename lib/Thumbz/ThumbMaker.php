@@ -7,10 +7,15 @@ use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Palette\RGB;
 use Imagine\Image\Point;
+use Thumbz\Filter\AbstractFilter;
 
 class ThumbMaker {
 
     protected $options;
+    /**
+     * @var AbstractFilter[]
+     */
+    protected $filters = [];
 
     use ImagineWrapperTrait;
 
@@ -19,13 +24,13 @@ class ThumbMaker {
      *
      * - background : the background color of the picture, useful when using fitSize option. Default : transparent
      * - fitSize : the picture will fit the size if the proportion are not the same. The background color will be used to fill the empty area
-     * - pngquant : the image should be compressed with pngquant. Be aware that it wont force the final image to be a png. Default : false
-     * - pngquant-bin : the pngquant binary. Default : pngquant
-     * - pngquant-quality-max : the max quality for pngquant. Default 100
-     * - pngquant-quality-min : the min quality for pngquant. Default 80
      */
     function __construct($options){
         $this->options = $options;
+    }
+
+    public function addFilter(AbstractFilter $filter){
+        $this->filters[] = $filter;
     }
 
 
@@ -75,37 +80,19 @@ class ThumbMaker {
             $realThumb = $thumb;
         }
 
-        $realThumb = $this->__makePngQuant($realThumb);
+        $realThumb = $this->_filter($realThumb);
 
         return $realThumb;
 
     }
 
-    private function __makePngQuant(ImageInterface $realThumb){
-        if( isset($this->options["pngquant"]) && $this->options["pngquant"] ){
-
-            $tempFile = tempnam("/tmp", "thumbz_quant");
-            $realThumb->save($tempFile, ["quality"=>100, "format" => "png"]);
-
-
-
-            $executable = isset($this->options["pngquant-bin"]) ? $this->options["pngquant-bin"] : "pngquant";
-            $maxquality = isset($this->options["pngquant-quality-max"]) ? $this->options["pngquant-quality-max"] : 100;
-            $minquality = isset($this->options["pngquant-quality-min"]) ? $this->options["pngquant-quality-min"] : 80;
-
-            if($minquality > $maxquality){
-                $minquality = $maxquality;
-            }
-
-            $command = "$executable --quality=$minquality-$maxquality - < ".escapeshellarg(    $tempFile);
-            $compressed = shell_exec($command);
-
-            if (!$compressed) {
-                throw new Exception("Pngquant compression failed with the following command : '$command'. Is pngquant 1.8+ installed on the server ? ");
-            }
-
-            unlink($tempFile);
-            return $this->getImagineAdapter()->load($compressed);
+    /**
+     * @param ImageInterface $realThumb
+     * @return ImageInterface
+     */
+    private function _filter(ImageInterface $realThumb){
+        foreach($this->filters as $f){
+            $realThumb = $f->filter($realThumb);
         }
 
         return $realThumb;
