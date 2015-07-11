@@ -11,12 +11,6 @@ abstract class AbstractFilter {
     use ImagineWrapperTrait;
 
     /**
-     * @var ImagineInterface
-     */
-    protected $imagineAdapter;
-
-
-    /**
      * @param ImageInterface $image
      */
     public function filter(ImageInterface $image){
