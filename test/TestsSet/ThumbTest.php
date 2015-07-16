@@ -32,8 +32,8 @@ class ThumbTest extends PHPUnit_Framework_TestCase{
 
         try{
 
-            $pictureCache = $pictureCachePng;
-            $thumbMaker   = $thumbMakerPng;
+            $pictureCache = $pictureCacheJpg;
+            $thumbMaker   = $thumbMakerJpg;
 
             if( ! $pictureCache->cacheExists($pictureName, $width, $height)){
 

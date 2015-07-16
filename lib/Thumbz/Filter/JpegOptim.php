@@ -28,7 +28,11 @@ class JpegOptim extends AbstractFilter {
         $maxquality = $this->getMaxQuality();
 
         $command = "$executable --max=$maxquality $stripAll $allProgressive ".escapeshellarg($tempFile);
-        shell_exec($command);
+        exec($command, $output, $status);
+
+        if($status>0){
+            throw new Exception("Jpegoptim compression failed with the following command : '$command'. Is jpegoptim installed and runnable ? ");
+        }
 
         $newImage = $this->getImagineAdapter()->load(file_get_contents($tempFile));
         unlink($tempFile);
