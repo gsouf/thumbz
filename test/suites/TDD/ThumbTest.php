@@ -16,16 +16,16 @@ class ThumbTest extends PHPUnit_Framework_TestCase{
 
 
 
-        $pictureFinder = new DirectoryPictureFinder(__DIR__ . "/../resources/img");
+        $pictureFinder = new DirectoryPictureFinder(__DIR__ . "/../../resources/img");
 
         // PNG MAKER
-        $pictureCachePng  = new DirectoryThumbCache(__DIR__ . "/../resources/cache");
+        $pictureCachePng  = new DirectoryThumbCache(__DIR__ . "/../../resources/cache");
         $pictureCachePng->setOuputFormat("png");
         $thumbMakerPng    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true]);
         $thumbMakerPng->addFilter(new \Thumbz\Filter\PngQuant());
 
         // JPG MAKER
-        $pictureCacheJpg  = new DirectoryThumbCache(__DIR__ . "/../resources/cache");
+        $pictureCacheJpg  = new DirectoryThumbCache(__DIR__ . "..//../resources/cache");
         $pictureCacheJpg->setOuputFormat("jpg");
         $thumbMakerJpg    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true]);
         $thumbMakerJpg->addFilter(new \Thumbz\Filter\JpegOptim(80));
@@ -44,7 +44,7 @@ class ThumbTest extends PHPUnit_Framework_TestCase{
 
             }
         }catch(Exception $e){
-            var_dump($e->getMessage());
+            $this->fail($e->getMessage());
         }
 
     }

@@ -22,7 +22,6 @@ class DirectoryPictureFinder extends AbstractPictureFinder {
      */
     public function findImage($name)
     {
-
         $path = $this->pathProtectorProtect($name);
 
 
@@ -36,10 +35,7 @@ class DirectoryPictureFinder extends AbstractPictureFinder {
             throw new ImageCreationException("Image could not be opened", 0, $e);
         }
 
-
-
         return $image;
-
     }
 
 }

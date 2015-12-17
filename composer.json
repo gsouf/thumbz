@@ -16,9 +16,14 @@
         "php": ">=5.4",
         "imagine/imagine": "~0.6.2"
     },
+
+    "require-dev": {
+        "mikey179/vfsStream": "~1.6.1"
+    },
+
     "autoload":{
         "psr-0":{
-            "Thumbz":"lib"
+            "Thumbz":"src"
         }
     }
 }
