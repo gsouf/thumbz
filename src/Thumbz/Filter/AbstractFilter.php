@@ -2,21 +2,19 @@
 
 namespace Thumbz\Filter;
 
-use \Imagine\Image\ImageInterface;
-use Imagine\Image\ImagineInterface;
-use Thumbz\ImagineWrapperTrait;
+
+use Imagine\Image\ImageInterface;
 
 abstract class AbstractFilter {
 
-    use ImagineWrapperTrait;
 
     /**
      * @param ImageInterface $image
      */
-    public function filter(ImageInterface $image){
+    public function filter($image){
         return $this->_filter($image);
     }
 
-    abstract protected function _filter(ImageInterface $image);
+    abstract protected function _filter($image);
 
 }

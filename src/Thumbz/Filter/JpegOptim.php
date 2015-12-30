@@ -2,7 +2,6 @@
 
 namespace Thumbz\Filter;
 
-use Imagine\Image\ImageInterface;
 use Thumbz\Exception;
 
 class JpegOptim extends AbstractFilter {
@@ -17,27 +16,20 @@ class JpegOptim extends AbstractFilter {
         $this->maxQuality = $maxQuality;
     }
 
-    protected function _filter(ImageInterface $image)
+    protected function _filter($image)
     {
-        $tempFile = tempnam("/tmp", "thumbz_jpegoptim");
-        $image->save($tempFile, ["quality"=>100, "format" => "jpg"]);
 
         $executable = $this->getExecutable();
         $stripAll = $this->hasStripAll() ? "--strip-all" : "";
         $allProgressive = $this->hasAllProgressive() ? "--all-progressive" : "";
         $maxquality = $this->getMaxQuality();
 
-        $command = "$executable --max=$maxquality $stripAll $allProgressive ".escapeshellarg($tempFile);
+        $command = "$executable --max=$maxquality $stripAll $allProgressive ".escapeshellarg($image);
         exec($command, $output, $status);
 
         if($status>0){
             throw new Exception("Jpegoptim compression failed with the following command : '$command'. Is jpegoptim installed and runnable ? ");
         }
-
-        $newImage = $this->getImagineAdapter()->load(file_get_contents($tempFile));
-        unlink($tempFile);
-        return $newImage;
-
     }
 
     /**

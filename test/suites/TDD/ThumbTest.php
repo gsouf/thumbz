@@ -1,52 +1,103 @@
 <?php
 
-use Thumbz\DirectoryPictureFinder;
+namespace Thumbz\Test;
+
+use Thumbz\Filter\AbstractFilter;
+use Thumbz\Filter\JpegOptim;
+use Thumbz\Filter\PngQuant;
+use Thumbz\PictureFinder\DirectoryPictureFinder;
 use Thumbz\Exception;
-use Thumbz\DirectoryThumbCache;
+use Thumbz\PictureFinderInterface;
+use Thumbz\ThumbCache\DirectoryThumbCache;
+use Thumbz\ThumbMaker;
 
+class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
+{
 
-class ThumbTest extends PHPUnit_Framework_TestCase{
+    /**
+     * @var DirectoryThumbCache
+     */
+    protected $thumbCache;
 
-    public function testThumb(){
+    /**
+     * @var PictureFinderInterface
+     */
+    protected $pictureFinder;
 
+    /**
+     * @var ThumbMaker
+     */
+    protected $thumberMaker;
 
-        $pictureName = "spongebob.jpg";
-        $width = 100;
-        $height = 100;
+    public function setUp()
+    {
+        $this->thumbCache = new DirectoryThumbCache($GLOBALS["cache-directory"]);
+        $this->pictureFinder = new DirectoryPictureFinder($GLOBALS["images-resources"]);
+        $this->thumberMaker = new ThumbMaker();
+        $this->thumbCache->flushAll();
+    }
 
+    private function processThumb($format, AbstractFilter $filter = null, $exifType){
 
+        $width = $height = 300;
+        $name = "spongebob.jpg";
 
-        $pictureFinder = new DirectoryPictureFinder(__DIR__ . "/../../resources/img");
+        $this->assertFalse($this->thumbCache->cacheExists($name, $width, $height, $format));
 
-        // PNG MAKER
-        $pictureCachePng  = new DirectoryThumbCache(__DIR__ . "/../../resources/cache");
-        $pictureCachePng->setOuputFormat("png");
-        $thumbMakerPng    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true]);
-        $thumbMakerPng->addFilter(new \Thumbz\Filter\PngQuant());
+        if(!$this->thumbCache->cacheExists($name, $width, $height, $format)) {
+            $picture = $this->pictureFinder->findPicture($name);
+            $thumb = $this->thumberMaker->generateThumb($picture, $width, $height);
 
-        // JPG MAKER
-        $pictureCacheJpg  = new DirectoryThumbCache(__DIR__ . "..//../resources/cache");
-        $pictureCacheJpg->setOuputFormat("jpg");
-        $thumbMakerJpg    = new \Thumbz\ThumbMaker(["background" => "#FFFFFF", "fitSize" => true]);
-        $thumbMakerJpg->addFilter(new \Thumbz\Filter\JpegOptim(80));
+            $this->thumbCache->setCache($name, $width, $height, $format, $thumb);
 
-        try{
+            $this->assertTrue($this->thumbCache->cacheExists($name, $width, $height, $format));
 
-            $pictureCache = $pictureCacheJpg;
-            $thumbMaker   = $thumbMakerJpg;
-
-            if( ! $pictureCache->cacheExists($pictureName, $width, $height)){
-
-                $image = $pictureFinder->findImage($pictureName);
-                $thumb = $thumbMaker->generateThumb($image, $width, $height);
-
-                $pictureCache->setCache($pictureName, $width, $height, $thumb);
-
+            if ($filter) {
+                $filter->filter($this->thumbCache->getCachePath($name, $width, $height, $format));
             }
-        }catch(Exception $e){
-            $this->fail($e->getMessage());
         }
 
+        $cachedFiled = $this->thumbCache->getCachePath($name, $width, $height, $format);
+
+        $this->assertEquals($exifType, exif_imagetype($cachedFiled), "Image type invalide");
+
+        if($exifType) {
+            $this->assertEquals([$width, $height], array_slice(getimagesize($cachedFiled), 0, 2));
+        }
+    }
+
+    public function testThumbJpg(){
+        $format = "jpg";
+        $filter = new JpegOptim(80);
+        $exifType = IMAGETYPE_JPEG;
+        $this->processThumb($format, $filter, $exifType);
+    }
+
+    public function testThumbPng(){
+        $format = "png";
+        $filter = new PngQuant();
+        $exifType = IMAGETYPE_PNG;
+        $this->processThumb($format, $filter, $exifType);
+    }
+
+    public function testThumbGif(){
+        $format = "gif";
+        $filter = null;
+        $exifType = IMAGETYPE_GIF;
+        $this->processThumb($format, $filter, $exifType);
+    }
+
+
+    public function testThumbWebP(){
+        $format = "webp";
+        $filter = null;
+        $exifType = false;
+        $this->processThumb($format, $filter, $exifType);
+    }
+
+    public function tearDown()
+    {
+        $this->thumbCache->flushAll();
     }
 
 }

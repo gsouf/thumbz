@@ -11,24 +11,41 @@ class PngQuant extends AbstractFilter {
     protected $minQuality = 80;
     protected $maxQuality = 100;
 
-    protected function _filter(ImageInterface $image)
+    /**
+     * PngQuant constructor.
+     * @param int $minQuality
+     * @param int $maxQuality
+     */
+    public function __construct($minQuality = 60, $maxQuality = 80)
     {
-        $tempFile = tempnam("/tmp", "thumbz_quant");
-        $image->save($tempFile, ["quality"=>100, "format" => "png"]);
+        $this->minQuality = $minQuality;
+        $this->maxQuality = $maxQuality;
+    }
+
+
+    protected function _filter($image)
+    {
+
 
         $executable = $this->getExecutable();
         $minquality = $this->getMinQuality();
         $maxquality = $this->getMaxQuality();
 
-        $command = "$executable --quality=$minquality-$maxquality - < ".escapeshellarg($tempFile);
-        $compressed = shell_exec($command);
+        $filePath = escapeshellarg($image);
 
-        if (!$compressed) {
+        $command = "$executable --quality=$minquality-$maxquality -f -o $filePath -- $filePath";
+        exec($command, $return, $status);
+
+
+
+        // 0 = ok
+        // 99 = ok, but no compression because quality was already to high
+        if ($status != 0 && $status != 99) {
+
+
             throw new Exception("Pngquant compression failed with the following command : '$command'. Is pngquant 1.8+ installed on the server ? ");
         }
 
-        unlink($tempFile);
-        return $this->getImagineAdapter()->load($compressed);
 
     }
 

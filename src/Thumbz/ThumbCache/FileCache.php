@@ -1,9 +1,13 @@
 <?php
 
 
-namespace Thumbz;
+namespace Thumbz\ThumbCache;
 
+use Imagine\Exception\RuntimeException;
 use Imagine\Image\ImageInterface;
+use Thumbz\Exception;
+use Thumbz\Filter\Cwebp;
+use Thumbz\PathProtectorTrait;
 
 /**
  * FileCache
@@ -16,14 +20,11 @@ class FileCache {
 
     protected $time;
 
-    public function __construct($dir,$time) {
-        if($dir{strlen($dir)-1} != "/")
-            $dir = $dir . "/";
 
+    public function __construct($dir, $time) {
         $this->pathProtectorSetBase($dir);
         $this->time=$time;
     }
-
 
 
     /**
@@ -71,10 +72,26 @@ class FileCache {
         return $this->pathProtectorProtect($path);
     }
 
-    public function cache($path, ImageInterface $data){
+    public function cache($path, $format, ImageInterface $data){
         $path = $this->getFullPath($path);
         $this->_prepareDirectoryForFile($path);
-        $data->save($path, array('quality' => 100));
+
+        if($format == "webp"){
+            $data->save($path, ["quality" => 100,  "format" => "png"]);
+
+            $cwebp = new Cwebp();
+            try{
+                $cwebp->filter($path);
+            }catch(Exception $e){
+                unlink($path);
+                throw new RuntimeException($e->getMessage());
+            }
+
+        } else {
+            $data->save($path, ["quality" => 100,  "format" => $format]);
+        }
+
+
         chmod($path, 0777);
     }
 

@@ -7,17 +7,12 @@ use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Palette\RGB;
 use Imagine\Image\Point;
+use Imagine\Imagick\Imagine;
 use Thumbz\Filter\AbstractFilter;
 
 class ThumbMaker {
 
     protected $options;
-    /**
-     * @var AbstractFilter[]
-     */
-    protected $filters = [];
-
-    use ImagineWrapperTrait;
 
     /**
      * available options :
@@ -25,19 +20,18 @@ class ThumbMaker {
      * - background : the background color of the picture, useful when using fitSize option. Default : transparent
      * - fitSize : the picture will fit the size if the proportion are not the same. The background color will be used to fill the empty area
      */
-    function __construct($options){
+    function __construct(array $options = []){
         $this->options = $options;
     }
 
-    public function addFilter(AbstractFilter $filter){
-        $this->filters[] = $filter;
-    }
+
 
 
     /**
      * @param ImageInterface $image
+     * @return ImageInterface
      */
-    public function generateThumb($image, $width, $height){
+    public function generateThumb(ImageInterface $image, $width, $height){
 
         $background = isset($this->options["background"]) ? $this->options["background"] : null;
         $fitSize    = isset($this->options["fitSize"])    ? $this->options["fitSize"]    : true;
@@ -60,7 +54,7 @@ class ThumbMaker {
             }
 
             // source http://harikt.com/blog/2012/12/17/resize-image-keeping-aspect-ratio-in-imagine/
-            $realThumb  = $this->getImagineAdapter()->create($sizeBox, $backgroundColor);
+            $realThumb  =  Image::create($sizeBox, $backgroundColor);
 
             $sizeR     = $thumb->getSize();
             $widthR    = $sizeR->getWidth();
@@ -80,22 +74,8 @@ class ThumbMaker {
             $realThumb = $thumb;
         }
 
-        $realThumb = $this->_filter($realThumb);
-
         return $realThumb;
 
-    }
-
-    /**
-     * @param ImageInterface $realThumb
-     * @return ImageInterface
-     */
-    private function _filter(ImageInterface $realThumb){
-        foreach($this->filters as $f){
-            $realThumb = $f->filter($realThumb);
-        }
-
-        return $realThumb;
     }
 
 

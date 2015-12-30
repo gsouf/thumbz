@@ -9,7 +9,8 @@ trait PathProtectorTrait {
 
     protected $basePathProtector;
 
-    public function pathProtectorSetBase($path){
+    protected function pathProtectorSetBase($path){
+        $path = rtrim($path);
         $this->basePathProtector = $this->__pathProtectorTruePath($path) . "/";
     }
 
