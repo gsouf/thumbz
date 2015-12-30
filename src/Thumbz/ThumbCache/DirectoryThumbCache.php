@@ -2,12 +2,12 @@
 
 namespace Thumbz\ThumbCache;
 
-
 use Thumbz\AbstractThumbCache;
 use Thumbz\Exception;
 use Imagine\Image\ImageInterface;
 
-class DirectoryThumbCache extends AbstractThumbCache {
+class DirectoryThumbCache extends AbstractThumbCache
+{
 
     /**
      * @var FileCache
@@ -17,7 +17,7 @@ class DirectoryThumbCache extends AbstractThumbCache {
 
     function __construct($baseDirectory, $time = null)
     {
-        if(null === $time){
+        if (null === $time) {
             $time = 86400 * 7;
         }
 
@@ -47,20 +47,21 @@ class DirectoryThumbCache extends AbstractThumbCache {
     }
 
 
-    public function flushAll(){
+    public function flushAll()
+    {
         $path = $this->fileCache->getDir();
 
         foreach (new \DirectoryIterator($path) as $fileInfo) {
-            if(!$fileInfo->isDot()) {
+            if (!$fileInfo->isDot()) {
                 unlink($fileInfo->getPathname());
             }
         }
 
     }
 
-    public function getCachePath($name, $width, $height, $format){
+    public function getCachePath($name, $width, $height, $format)
+    {
         $name = $this->getCacheName($name, $width, $height, $format);
         return $this->fileCache->pathProtectorProtect($name);
     }
-
 }

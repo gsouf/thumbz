@@ -5,7 +5,8 @@ namespace Thumbz\Filter;
 use Imagine\Image\ImageInterface;
 use Thumbz\Exception;
 
-class PngQuant extends AbstractFilter {
+class PngQuant extends AbstractFilter
+{
 
     protected $executable = "pngquant";
     protected $minQuality = 80;
@@ -23,7 +24,7 @@ class PngQuant extends AbstractFilter {
     }
 
 
-    protected function _filter($image)
+    public function filter($image)
     {
 
 
@@ -41,9 +42,10 @@ class PngQuant extends AbstractFilter {
         // 0 = ok
         // 99 = ok, but no compression because quality was already to high
         if ($status != 0 && $status != 99) {
-
-
-            throw new Exception("Pngquant compression failed with the following command : '$command'. Is pngquant 1.8+ installed on the server ? ");
+            throw new Exception(
+                "Pngquant compression failed with the following command : "
+                ."'$command'. Is pngquant 1.8+ installed on the server ? "
+            );
         }
 
 
@@ -97,7 +99,4 @@ class PngQuant extends AbstractFilter {
     {
         $this->maxQuality = $maxQuality;
     }
-
-
-
 }

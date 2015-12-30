@@ -5,7 +5,6 @@
 
 namespace Thumbz;
 
-
 use Imagine\Image\ImageInterface;
 
 interface PictureFinderInterface
@@ -16,5 +15,4 @@ interface PictureFinderInterface
      * @return ImageInterface the image to make a thumb of
      */
     public function findPicture($name);
-
 }

@@ -19,16 +19,19 @@ class PathProtectorTraitTest extends \PHPUnit_Framework_TestCase
      */
     protected $pathProtector;
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->pathProtector = new PathProtectorMock("/root/protected");
     }
 
-    public function testGetBase(){
+    public function testGetBase()
+    {
         $this->assertEquals("/root/protected/", $this->pathProtector->pathProtectorGetBase());
     }
 
 
-    public function testPathProtectorProtect(){
+    public function testPathProtectorProtect()
+    {
 
         $this->assertEquals("/root/protected/foo", $this->pathProtector->pathProtectorProtect("foo"));
         $this->assertEquals("/root/protected/foo/bar", $this->pathProtector->pathProtectorProtect("foo/bar"));
@@ -41,21 +44,20 @@ class PathProtectorTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("/root/protected/foo/bar", $this->pathProtector->pathProtectorProtect("/root/../root/protected/foo/bar"));
 
 
-        try{
+        try {
             $this->pathProtector->pathProtectorProtect("foo/../../bar");
             $this->fail("Exception not thrown");
-        }catch (RootPathViolationException $e){
+        } catch (RootPathViolationException $e) {
             $this->assertTrue(true);
         }
 
-        try{
+        try {
             $this->pathProtector->pathProtectorProtect("../foo/bar");
             $this->fail("Exception not thrown");
-        }catch (RootPathViolationException $e){
+        } catch (RootPathViolationException $e) {
             $this->assertTrue(true);
         }
 
 
     }
-
 }

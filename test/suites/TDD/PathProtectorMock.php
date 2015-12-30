@@ -5,7 +5,6 @@
 
 namespace Thumbz\Test;
 
-
 use Thumbz\PathProtectorTrait;
 
 class PathProtectorMock
@@ -17,5 +16,4 @@ class PathProtectorMock
     {
         $this->pathProtectorSetBase($dir);
     }
-
 }

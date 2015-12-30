@@ -5,7 +5,6 @@
 
 namespace Thumbz\Filter;
 
-
 use Thumbz\Exception;
 
 class Cwebp extends AbstractFilter
@@ -26,17 +25,15 @@ class Cwebp extends AbstractFilter
         $this->alphaQuality = $alphaQuality;
     }
 
-    protected function _filter($image)
+    public function filter($image)
     {
 
         $path = escapeshellarg($image);
         exec("$this->executable -q $this->quality -alpha_q $this->alphaQuality -quiet -o $path -- $path", $r, $exit);
 
-        if($exit > 0){
+        if ($exit > 0) {
             throw new Exception("Unable to save image in webp format");
         }
 
     }
-
-
 }

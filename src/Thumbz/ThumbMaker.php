@@ -2,7 +2,6 @@
 
 namespace Thumbz;
 
-
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Palette\RGB;
@@ -10,7 +9,8 @@ use Imagine\Image\Point;
 use Imagine\Imagick\Imagine;
 use Thumbz\Filter\AbstractFilter;
 
-class ThumbMaker {
+class ThumbMaker
+{
 
     protected $options;
 
@@ -18,9 +18,11 @@ class ThumbMaker {
      * available options :
      *
      * - background : the background color of the picture, useful when using fitSize option. Default : transparent
-     * - fitSize : the picture will fit the size if the proportion are not the same. The background color will be used to fill the empty area
+     * - fitSize : the picture will fit the size if the proportion are not the same.
+     * The background color will be used to fill the empty area
      */
-    function __construct(array $options = []){
+    public function __construct(array $options = [])
+    {
         $this->options = $options;
     }
 
@@ -31,7 +33,8 @@ class ThumbMaker {
      * @param ImageInterface $image
      * @return ImageInterface
      */
-    public function generateThumb(ImageInterface $image, $width, $height){
+    public function generateThumb(ImageInterface $image, $width, $height)
+    {
 
         $background = isset($this->options["background"]) ? $this->options["background"] : null;
         $fitSize    = isset($this->options["fitSize"])    ? $this->options["fitSize"]    : true;
@@ -43,13 +46,13 @@ class ThumbMaker {
             ->thumbnail($sizeBox, $thumbMode);
 
         // fill the area
-        if($fitSize){
+        if ($fitSize) {
 
             $palette = new RGB();
 
-            if( !$background || $background == "transparent"){
-                $backgroundColor = $palette->color("fff",1);
-            }else{
+            if (!$background || $background == "transparent") {
+                $backgroundColor = $palette->color("fff", 1);
+            } else {
                 $backgroundColor = $palette->color($background);
             }
 
@@ -61,22 +64,20 @@ class ThumbMaker {
             $heightR   = $sizeR->getHeight();
 
             $startX = $startY = 0;
-            if ( $widthR < $width ) {
+            if ($widthR < $width) {
                 $startX = ( $width - $widthR ) / 2;
             }
-            if ( $heightR < $height ) {
+            if ($heightR < $height) {
                 $startY = ( $height - $heightR ) / 2;
             }
 
             $realThumb->paste($thumb, new Point($startX, $startY));
 
-        }else{
+        } else {
             $realThumb = $thumb;
         }
 
         return $realThumb;
 
     }
-
-
 }

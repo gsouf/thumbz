@@ -37,14 +37,15 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
         $this->thumbCache->flushAll();
     }
 
-    private function processThumb($format, AbstractFilter $filter = null, $exifType){
+    private function processThumb($format, AbstractFilter $filter = null, $exifType)
+    {
 
         $width = $height = 300;
         $name = "spongebob.jpg";
 
         $this->assertFalse($this->thumbCache->cacheExists($name, $width, $height, $format));
 
-        if(!$this->thumbCache->cacheExists($name, $width, $height, $format)) {
+        if (!$this->thumbCache->cacheExists($name, $width, $height, $format)) {
             $picture = $this->pictureFinder->findPicture($name);
             $thumb = $this->thumberMaker->generateThumb($picture, $width, $height);
 
@@ -61,26 +62,29 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($exifType, exif_imagetype($cachedFiled), "Image type invalide");
 
-        if($exifType) {
+        if ($exifType) {
             $this->assertEquals([$width, $height], array_slice(getimagesize($cachedFiled), 0, 2));
         }
     }
 
-    public function testThumbJpg(){
+    public function testThumbJpg()
+    {
         $format = "jpg";
         $filter = new JpegOptim(80);
         $exifType = IMAGETYPE_JPEG;
         $this->processThumb($format, $filter, $exifType);
     }
 
-    public function testThumbPng(){
+    public function testThumbPng()
+    {
         $format = "png";
         $filter = new PngQuant();
         $exifType = IMAGETYPE_PNG;
         $this->processThumb($format, $filter, $exifType);
     }
 
-    public function testThumbGif(){
+    public function testThumbGif()
+    {
         $format = "gif";
         $filter = null;
         $exifType = IMAGETYPE_GIF;
@@ -88,7 +92,8 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testThumbWebP(){
+    public function testThumbWebP()
+    {
         $format = "webp";
         $filter = null;
         $exifType = false;
@@ -99,6 +104,4 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
     {
         $this->thumbCache->flushAll();
     }
-
 }
-

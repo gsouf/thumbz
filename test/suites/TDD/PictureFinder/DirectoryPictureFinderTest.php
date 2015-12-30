@@ -11,7 +11,8 @@ use Thumbz\PictureFinder\DirectoryPictureFinder;
 class DirectoryPictureFinderTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testFind(){
+    public function testFind()
+    {
 
 
         $pictureFinder = new DirectoryPictureFinder($GLOBALS["images-resources"]);
@@ -21,5 +22,4 @@ class DirectoryPictureFinderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedPicture, $picture);
 
     }
-
 }

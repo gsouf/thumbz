@@ -5,7 +5,6 @@
 
 namespace Thumbz\PictureFinder;
 
-
 use Thumbz\PictureFinderInterface;
 
 class ClosurePictureFinder implements PictureFinderInterface
@@ -27,6 +26,4 @@ class ClosurePictureFinder implements PictureFinderInterface
     {
         return call_user_func($this->handler, $name);
     }
-
-
 }

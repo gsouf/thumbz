@@ -2,11 +2,10 @@
 
 namespace Thumbz;
 
-
 use Imagine\Image\ImageInterface;
 
-
-abstract class AbstractThumbCache {
+abstract class AbstractThumbCache
+{
 
 
     /**
@@ -29,10 +28,9 @@ abstract class AbstractThumbCache {
     abstract public function getCachePath($name, $width, $height, $format);
 
 
-    public function getCacheName($name, $width, $height, $format){
+    public function getCacheName($name, $width, $height, $format)
+    {
         $path = $name . "." . $width . "-" . $height . "." . $format;
         return $path;
     }
-
-
 }

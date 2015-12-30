@@ -4,19 +4,20 @@ namespace Thumbz\Filter;
 
 use Thumbz\Exception;
 
-class JpegOptim extends AbstractFilter {
+class JpegOptim extends AbstractFilter
+{
 
     protected $executable = "jpegoptim";
     protected $maxQuality = 100;
     protected $stripAll = true;
     protected $allProgressive = true;
 
-    function __construct($maxQuality = 100)
+    public function __construct($maxQuality = 100)
     {
         $this->maxQuality = $maxQuality;
     }
 
-    protected function _filter($image)
+    public function filter($image)
     {
 
         $executable = $this->getExecutable();
@@ -27,8 +28,11 @@ class JpegOptim extends AbstractFilter {
         $command = "$executable --max=$maxquality $stripAll $allProgressive ".escapeshellarg($image);
         exec($command, $output, $status);
 
-        if($status>0){
-            throw new Exception("Jpegoptim compression failed with the following command : '$command'. Is jpegoptim installed and runnable ? ");
+        if ($status>0) {
+            throw new Exception(
+                "Jpegoptim compression failed with the following command : "
+                . "'$command'. Is jpegoptim installed and runnable ?"
+            );
         }
     }
 
@@ -99,7 +103,4 @@ class JpegOptim extends AbstractFilter {
     {
         $this->maxQuality = $maxQuality;
     }
-
-
-
 }
