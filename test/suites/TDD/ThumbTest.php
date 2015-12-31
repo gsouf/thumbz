@@ -2,6 +2,7 @@
 
 namespace Thumbz\Test;
 
+use Imagine\Image\ImageInterface;
 use Thumbz\Filter\AbstractFilter;
 use Thumbz\Filter\JpegOptim;
 use Thumbz\Filter\PngQuant;
@@ -43,28 +44,32 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
         $width = $height = 300;
         $name = "spongebob.jpg";
 
-        $this->assertFalse($this->thumbCache->cacheExists($name, $width, $height, $format));
 
-        if (!$this->thumbCache->cacheExists($name, $width, $height, $format)) {
+        $cacheItem = $this->thumbCache->getItem($name, $width, $height, $format);
+
+        $this->assertFalse($cacheItem->cacheExists());
+
+        if (!$cacheItem->cacheExists()) {
             $picture = $this->pictureFinder->findPicture($name);
             $thumb = $this->thumberMaker->generateThumb($picture, $width, $height);
 
-            $this->thumbCache->setCache($name, $width, $height, $format, $thumb);
-
-            $this->assertTrue($this->thumbCache->cacheExists($name, $width, $height, $format));
+            $cacheItem->setCache($thumb);
+            $this->assertTrue($cacheItem->cacheExists());
 
             if ($filter) {
-                $filter->filter($this->thumbCache->getCachePath($name, $width, $height, $format));
+                $filter->filter($cacheItem->getCachePath());
             }
         }
 
-        $cachedFiled = $this->thumbCache->getCachePath($name, $width, $height, $format);
+        $cachedFile = $cacheItem->getCachePath();
 
-        $this->assertEquals($exifType, exif_imagetype($cachedFiled), "Image type invalide");
+        $this->assertEquals($exifType, exif_imagetype($cachedFile), "Image type invalide");
 
         if ($exifType) {
-            $this->assertEquals([$width, $height], array_slice(getimagesize($cachedFiled), 0, 2));
+            $this->assertEquals([$width, $height], array_slice(getimagesize($cachedFile), 0, 2));
+            $this->assertInstanceOf(ImageInterface::class, $cacheItem->loadImage());
         }
+
     }
 
     public function testThumbJpg()

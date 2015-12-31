@@ -51,7 +51,7 @@ class DirectoryThumbCache extends AbstractThumbCache
     {
         $path = $this->fileCache->getDir();
 
-        if(file_exists($path)) {
+        if (file_exists($path)) {
 
             foreach (new \DirectoryIterator($path) as $fileInfo) {
                 if (!$fileInfo->isDot()) {
