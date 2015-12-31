@@ -5,7 +5,7 @@ namespace Thumbz\Filter;
 use Imagine\Image\ImageInterface;
 use Thumbz\Exception;
 
-class PngQuant extends AbstractFilter
+class PngQuant implements FileFilterInterface
 {
 
     protected $executable = "pngquant";

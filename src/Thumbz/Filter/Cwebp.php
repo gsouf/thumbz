@@ -7,7 +7,7 @@ namespace Thumbz\Filter;
 
 use Thumbz\Exception;
 
-class Cwebp extends AbstractFilter
+class Cwebp implements FileFilterInterface
 {
 
     protected $executable = "cwebp";

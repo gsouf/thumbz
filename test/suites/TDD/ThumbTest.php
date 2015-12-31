@@ -3,13 +3,14 @@
 namespace Thumbz\Test;
 
 use Imagine\Image\ImageInterface;
-use Thumbz\Filter\AbstractFilter;
+use Thumbz\Filter\FileFilterInterface;
 use Thumbz\Filter\JpegOptim;
 use Thumbz\Filter\PngQuant;
 use Thumbz\PictureFinder\DirectoryPictureFinder;
 use Thumbz\Exception;
 use Thumbz\PictureFinderInterface;
 use Thumbz\ThumbCache\DirectoryThumbCache;
+use Thumbz\ThumbCache\FileCache;
 use Thumbz\ThumbMaker;
 
 class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
@@ -38,7 +39,7 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
         $this->thumbCache->flushAll();
     }
 
-    private function processThumb($format, AbstractFilter $filter = null, $exifType)
+    private function processThumb($format, FileFilterInterface $filter = null, $exifType)
     {
 
         $width = $height = 300;
@@ -49,16 +50,14 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($cacheItem->cacheExists());
 
-        if (!$cacheItem->cacheExists()) {
-            $picture = $this->pictureFinder->findPicture($name);
-            $thumb = $this->thumberMaker->generateThumb($picture, $width, $height);
+        $picture = $this->pictureFinder->findPicture($name);
+        $thumb = $this->thumberMaker->generateThumb($picture, $width, $height);
 
-            $cacheItem->setCache($thumb);
-            $this->assertTrue($cacheItem->cacheExists());
+        $cacheItem->setCache($thumb);
+        $this->assertTrue($cacheItem->cacheExists());
 
-            if ($filter) {
-                $filter->filter($cacheItem->getCachePath());
-            }
+        if ($filter) {
+            $filter->filter($cacheItem->getCachePath());
         }
 
         $cachedFile = $cacheItem->getCachePath();
@@ -69,6 +68,28 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals([$width, $height], array_slice(getimagesize($cachedFile), 0, 2));
             $this->assertInstanceOf(ImageInterface::class, $cacheItem->loadImage());
         }
+
+
+
+        // Test manual save for direct output
+        $fileCache = new FileCache(sys_get_temp_dir(), 0);
+        $fileName = tempnam(sys_get_temp_dir(), 'thumbzcache');
+        $fileCache->cache($fileName, $format, $thumb);
+
+        $filePath = $fileCache->getFullPath($fileName);
+
+        if ($filter) {
+            $filter->filter($filePath);
+        }
+
+        $this->assertEquals($exifType, exif_imagetype($filePath), "Image type invalide");
+
+        if ($exifType) {
+            $this->assertEquals([$width, $height], array_slice(getimagesize($filePath), 0, 2));
+            $this->assertInstanceOf(ImageInterface::class, $cacheItem->loadImage());
+        }
+
+        unlink($filePath);
 
     }
 

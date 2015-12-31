@@ -4,7 +4,7 @@ namespace Thumbz\Filter;
 
 use Thumbz\Exception;
 
-class JpegOptim extends AbstractFilter
+class JpegOptim implements FileFilterInterface
 {
 
     protected $executable = "jpegoptim";

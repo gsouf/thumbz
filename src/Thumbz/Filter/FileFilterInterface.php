@@ -4,12 +4,12 @@ namespace Thumbz\Filter;
 
 use Imagine\Image\ImageInterface;
 
-abstract class AbstractFilter
+interface FileFilterInterface
 {
 
 
     /**
      * @param ImageInterface $image
      */
-    abstract public function filter($image);
+    public function filter($image);
 }
