@@ -19,7 +19,7 @@ matrix:
     - php: nightly
 
 before_script:
-  - sudo pecl install imagick
+  - pecl install imagick
   - phpenv config-rm xdebug.ini
   - travis_retry composer self-update
   - travis_retry composer update --prefer-dist
