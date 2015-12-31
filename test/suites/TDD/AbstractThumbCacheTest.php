@@ -21,7 +21,6 @@ class AbstractThumbCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCacheName()
     {
-        $this->assertEquals("foo.5-10.png", $this->thumbCache->getCacheName("foo", 5, 10, "png"));
-        $this->assertEquals("foo.5-10.jpg", $this->thumbCache->getCacheName("foo", 5, 10, "jpg"));
+        $this->assertEquals("foo.5-10.png", $this->thumbCache->getItem("foo", 5, 10, "png")->getCacheName());
     }
 }

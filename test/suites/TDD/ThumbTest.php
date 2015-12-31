@@ -62,6 +62,9 @@ class ThumbGenerationTest extends \PHPUnit_Framework_TestCase
 
         $cachedFile = $cacheItem->getCachePath();
 
+        $expectedName = $GLOBALS["cache-directory"] . "/$name.$width-$height.$format";
+        $this->assertEquals($expectedName, $cachedFile);
+
         $this->assertEquals($exifType, exif_imagetype($cachedFile), "Image type invalide");
 
         if ($exifType) {

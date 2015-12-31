@@ -5,6 +5,7 @@ namespace Thumbz\ThumbCache;
 use Thumbz\AbstractThumbCache;
 use Thumbz\Exception;
 use Imagine\Image\ImageInterface;
+use Thumbz\ThumbCacheItem;
 
 class DirectoryThumbCache extends AbstractThumbCache
 {
@@ -29,20 +30,20 @@ class DirectoryThumbCache extends AbstractThumbCache
      * @return bool
      * @throws Exception
      */
-    public function cacheExists($name, $width, $height, $format)
+    public function cacheExists(ThumbCacheItem $cacheItem)
     {
-        return $this->fileCache->isValid($this->getCacheName($name, $width, $height, $format));
+        return $this->fileCache->isValid($cacheItem->getCacheName());
     }
 
-    public function setCache($name, $width, $height, $format, ImageInterface $data)
+    public function setCache(ThumbCacheItem $cacheItem, ImageInterface $data)
     {
-        $fileName = $this->getCacheName($name, $width, $height, $format);
-        $this->fileCache->cache($fileName, $format, $data);
+        $fileName = $cacheItem->getCacheName();
+        $this->fileCache->cache($fileName, $cacheItem->getFormat(), $data);
     }
 
-    public function getCache($name, $width, $height, $format)
+    public function getCache(ThumbCacheItem $cacheItem)
     {
-        $path = $this->getCacheName($name, $width, $height, $format);
+        $path = $cacheItem->getCacheName();
         return $this->fileCache->getCache($path);
     }
 
@@ -63,9 +64,9 @@ class DirectoryThumbCache extends AbstractThumbCache
 
     }
 
-    public function getCachePath($name, $width, $height, $format)
+    public function getCachePath(ThumbCacheItem $cacheItem)
     {
-        $name = $this->getCacheName($name, $width, $height, $format);
+        $name = $cacheItem->getCacheName();
         return $this->fileCache->pathProtectorProtect($name);
     }
 }

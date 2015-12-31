@@ -9,14 +9,15 @@ class ThumbCacheItem
 {
 
     protected $name;
-    protected $width;
-    protected $height;
     protected $format;
 
     /**
      * @var AbstractThumbCache
      */
     protected $thumbCache;
+
+
+    protected $cacheName = null;
 
     /**
      * CacheItem constructor.
@@ -26,14 +27,22 @@ class ThumbCacheItem
      * @param string $format format of the thumbnail (jpg, png, gif..)
      * @param AbstractThumbCache $cacheAdapter cache interface
      */
-    public function __construct($name, $width, $height, $format, AbstractThumbCache $cacheAdapter)
+    public function __construct($cacheName, $format, AbstractThumbCache $cacheAdapter)
     {
-        $this->name = $name;
-        $this->width = $width;
-        $this->height = $height;
+        $this->name = $cacheName;
         $this->format = $format;
         $this->thumbCache = $cacheAdapter;
     }
+
+    /**
+     * @return string
+     */
+    public function getFormat()
+    {
+        return $this->format;
+    }
+
+
 
     /**
      * Check if a cache exists for the item
@@ -41,7 +50,11 @@ class ThumbCacheItem
      */
     public function cacheExists()
     {
-        return $this->thumbCache->cacheExists($this->name, $this->width, $this->height, $this->format);
+        return $this->thumbCache->cacheExists($this);
+    }
+
+    public function getCacheName(){
+        return $this->name;
     }
 
     /**
@@ -50,7 +63,7 @@ class ThumbCacheItem
      */
     public function setCache($data)
     {
-        $this->thumbCache->setCache($this->name, $this->width, $this->height, $this->format, $data);
+        $this->thumbCache->setCache($this, $data);
     }
 
 
@@ -60,7 +73,7 @@ class ThumbCacheItem
      */
     public function getCachePath()
     {
-        return $this->thumbCache->getCachePath($this->name, $this->width, $this->height, $this->format);
+        return $this->thumbCache->getCachePath($this);
     }
 
     /**

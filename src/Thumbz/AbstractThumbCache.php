@@ -13,11 +13,11 @@ abstract class AbstractThumbCache
      * @return bool
      * @throws Exception
      */
-    abstract public function cacheExists($name, $width, $height, $format);
+    abstract public function cacheExists(ThumbCacheItem $cacheItem);
 
-    abstract public function setCache($name, $width, $height, $format, ImageInterface $data);
+    abstract public function setCache(ThumbCacheItem $cacheItem, ImageInterface $data);
 
-    abstract public function getCache($name, $width, $height, $format);
+    abstract public function getCache(ThumbCacheItem $cacheItem);
 
     abstract public function flushAll();
 
@@ -26,18 +26,13 @@ abstract class AbstractThumbCache
      */
     public function getItem($name, $width, $height, $format)
     {
-        return new ThumbCacheItem($name, $width, $height, $format, $this);
+        $name = $name . "." . $width . "-" . $height . "." . $format;
+        return new ThumbCacheItem($name, $format, $this);
     }
 
     /**
      * The full path to the cached file
      */
-    abstract public function getCachePath($name, $width, $height, $format);
+    abstract public function getCachePath(ThumbCacheItem $cacheItem);
 
-
-    public function getCacheName($name, $width, $height, $format)
-    {
-        $path = $name . "." . $width . "-" . $height . "." . $format;
-        return $path;
-    }
 }
